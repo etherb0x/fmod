@@ -1,0 +1,135 @@
+// === ACCESSING AND COPYING SOUND PROPERTIES ===
+
+// 1. ACCESSING SINGLESOUND PROPERTIES
+var singleSound = editorSelection[0]; // Assume we have a SingleSound selected
+if (singleSound.entity === 'SingleSound') {
+    // Basic properties - directly accessible
+    var volume = singleSound.volume;            // e.g., 0 (dB)
+    var pitch = singleSound.pitch;              // e.g., 3.6 (semitones)
+    var startOffset = singleSound.startOffset;  // e.g., 22 (ms)
+    
+    // Timeline position properties
+    var startPosition = singleSound.start;      // e.g., 5.5 (seconds on timeline)
+    var length = singleSound.length;            // e.g., 0.87 (seconds duration)
+    
+    // Trigger and playback properties
+    var isAsync = singleSound.isAsync;               // e.g., false
+    var looping = singleSound.looping;               // e.g., false
+    var playCount = singleSound.playCount;           // e.g., 0
+    var triggerProbability = singleSound.triggerProbability;  // e.g., 100
+
+    // Voice management properties
+    var voiceStealing = singleSound.voiceStealing;   // e.g., 0
+    var maxVoices = singleSound.maxVoices;           // e.g., 65
+    
+    // Audio file reference
+    var audioFileId = singleSound.audioFile.id;      // e.g., {9b8c048a-12bf-4067-92aa-05a228c6b3f3}
+    var audioFilePath = singleSound.audioFile.getAbsoluteAssetPath(); // e.g., "D:/FromTheForge/sounds/piano.wav"
+}
+
+// 2. ACCESSING MULTISOUND PROPERTIES
+var multiSound = editorSelection[0]; // Assume we have a MultiSound selected
+if (multiSound.entity === 'MultiSound') {
+    // Basic container properties
+    var playlistMode = multiSound.playlistMode;    // e.g., 1 (random) or 0 (sequential)
+    var looping = multiSound.looping;              // e.g., true
+    
+    // Timeline position
+    var startPosition = multiSound.start;          // e.g., 13.5 (seconds on timeline)
+    var length = multiSound.length;                // e.g., 2.75 (seconds duration)
+    
+    // Access contained sounds through array indexing
+    // First sound in container
+    var firstSound = multiSound.sounds[0];         // or multiSound.sounds.0
+    if (firstSound && firstSound.isValid) {
+        // Access properties using _native for more details
+        var firstSoundVolume = firstSound._native.volume;          // e.g., 7.5
+        var firstSoundPitch = firstSound._native.pitch;            // e.g., 3.6
+        var firstSoundStartOffset = firstSound._native.startOffset; // e.g., 22
+        var firstSoundId = firstSound.id;           // e.g., {48c55c56-cd0e-4850-b17d-ab3c66dd99a9}
+    }
+    
+    // Second sound in container
+    var secondSound = multiSound.sounds[1];        // or multiSound.sounds.1
+    if (secondSound && secondSound.isValid) {
+        var secondSoundVolume = secondSound._native.volume;         // e.g., -6
+        var secondSoundPitch = secondSound._native.pitch;           // e.g., 3.2
+        var secondSoundStartOffset = secondSound._native.startOffset; // e.g., 0
+        var secondSoundId = secondSound.id;          // e.g., {5a71f682-d117-4ea1-8717-38214e8bd955}
+    }
+    
+    // Get count of sounds in container
+    var soundCount = 0;
+    for (var i = 0; i < 100; i++) { // Safety limit
+        if (multiSound.sounds[i] && multiSound.sounds[i].isValid) {
+            soundCount++;
+        } else {
+            break;
+        }
+    }
+    console.log("MultiSound contains " + soundCount + " sounds");
+}
+
+// 3. CREATING NEW SOUNDS WITH COPIED PROPERTIES
+function createNewSingleSound(original, audioFilePath) {
+    // Create a new SingleSound
+    var newSound = studio.project.create('SingleSound');
+    
+    // Set audio file
+    newSound.audioFile = studio.project.workspace.masterAssetFolder.getAsset(audioFilePath);
+    
+    // Copy properties from original
+    newSound.volume = original.volume;
+    newSound.pitch = original.pitch;
+    newSound.startOffset = original.startOffset;
+    newSound.looping = original.looping;
+    newSound.playCount = original.playCount;
+    newSound.triggerProbability = original.triggerProbability;
+    newSound.isAsync = original.isAsync;
+    newSound.voiceStealing = original.voiceStealing;
+    newSound.maxVoices = original.maxVoices;
+    
+    return newSound;
+}
+
+// 4. CREATING NEW MULTISOUND WITH COPIED PROPERTIES
+function createNewMultiSound(original, audioFilePaths) {
+    // Create a new MultiSound
+    var newMulti = studio.project.create('MultiSound');
+    
+    // Copy container properties
+    newMulti.playlistMode = original.playlistMode;
+    newMulti.looping = original.looping;
+    
+    // Create and add sounds
+    for (var i = 0; i < original.sounds.length; i++) {
+        if (original.sounds[i] && original.sounds[i].isValid) {
+            // Create a sound of the same type
+            var newSound = studio.project.create(original.sounds[i].entity);
+            
+            // Set audio file if provided, otherwise keep original
+            if (audioFilePaths && audioFilePaths[i]) {
+                newSound.audioFile = studio.project.workspace.masterAssetFolder.getAsset(audioFilePaths[i]);
+            } else if (original.sounds[i].audioFile) {
+                newSound.audioFile = original.sounds[i].audioFile;
+            }
+            
+            // Copy properties from _native when available
+            if (original.sounds[i]._native) {
+                newSound.volume = original.sounds[i]._native.volume;
+                newSound.pitch = original.sounds[i]._native.pitch;
+                newSound.startOffset = original.sounds[i]._native.startOffset;
+            } else {
+                // Fall back to direct properties
+                newSound.volume = original.sounds[i].volume;
+                newSound.pitch = original.sounds[i].pitch;
+                newSound.startOffset = original.sounds[i].startOffset;
+            }
+            
+            // Set owner to add to the MultiSound
+            newSound.owner = newMulti;
+        }
+    }
+    
+    return newMulti;
+}

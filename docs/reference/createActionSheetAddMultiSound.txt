@@ -1,0 +1,22 @@
+Hi,
+
+Unfortunately, adding action sheets to events via the Studio Scripting API is currently bugged. I’ve noted this on our feature/improvement tracker.
+
+My mistake, it’s not bugged - you can create an ActionSheet via the Studio Scripting API and add a MultiSound to it with the following code:
+
+var actionSheet = studio.project.create("ActionSheet");
+var sound = studio.project.create('MultiSound');
+actionSheet.modules = sound;
+event.relationships.parameters.add(actionSheet);
+sound.audioTrack = event.masterTrack;
+
+You can also use the following code to add an Multi Instrument to an existing action sheet on an event:
+
+event.parameters.forEach(function (sheet) {
+	if (sheet.isOfExactType('ActionSheet')){
+		var sound = studio.project.create('MultiSound');
+		sound.owner = sheet.modules;
+	}
+});
+
+As for why your script creates a timeline in a new event, it appears there’s a slight difference between creating an event using the API and using the GUI. If you want to disable the timeline of an event created using the Scripting API, you can set event.timeline.isProxyEnabled to false to disable it, and to true to enable it.

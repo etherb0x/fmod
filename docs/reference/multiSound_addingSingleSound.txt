@@ -1,0 +1,11 @@
+After some discussion with the Dev team, I have found that this correctly allows a sound to be created inside a multi-instrument without intefering with the timeline:
+
+var sound = "C:/path/to/jaguar.wav";
+var event = studio.project.create("Event");
+event.name = "New Event";
+var track = event.addGroupTrack();
+var multisound = track.addSound(event.timeline, 'MultiSound', 0, 10);
+var subsound = studio.project.create('SingleSound');
+subsound.owner = multisound;
+multisound.sounds[0].audioFile = studio.project.importAudioFile(sound);
+multisound.relationships.sounds.add(subsound);

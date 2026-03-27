@@ -1,0 +1,15 @@
+Dragging directly into a multi-instrument cannot be done with programmer instruments. However, it can be done with events like “voc1” - dragging “voc1” into the multi-instrument will create an event instrument that plays the “voc1” event.
+
+Below, I’ve modified your original code snippet to do what you seem to want - it will create an event “voc1”, add “voc1” to an event instrument, and add the event instrument to a multi-instrument:
+
+var event = studio.window.browserSelection()[0];
+var track = event.addGroupTrack("audio 1");
+var multiInstrument = track.addSound(event.timeline, 'MultiSound', 0, 10);
+
+var childEvent = studio.project.create("Event");
+childEvent.name = 'voc1';
+childEvent.folder = event;
+
+var eventInstrument = studio.project.create('EventSound');
+eventInstrument.event = childEvent;
+eventInstrument.owner = multiInstrument;
