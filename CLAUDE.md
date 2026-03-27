@@ -16,15 +16,16 @@ Umbrella workspace for all FMOD development. Contains shared platform documentat
 - New projects go under mcp/, scripts/, or tools/ depending on type
 - All tools discover shared doc paths by reading `convention-map.yaml` `project.paths` — not hardcoded
 
+## Documentation
+
+- `docs/api/2.02/INDEX.md` — FMOD 2.02 scripting API reference (25 files, grouped by domain)
+- `docs/knowledge/index.md` — operational knowledge store (rules, patterns, property mappings per domain)
+
+Read the relevant index first, then drill into the specific file you need. Do not read API or knowledge files without checking the index.
+
 ## Knowledge Store
 
-All domain rules, patterns, and learnings are in `docs/knowledge/`. Read the relevant domain file before writing FMOD scripts or making structural changes:
+All domain rules, patterns, and learnings are in `docs/knowledge/` (see `docs/knowledge/index.md` for full listing). Before writing FMOD scripts or making structural changes, read:
 
 - `docs/knowledge/scripting/rules.md` — scripting console rules (crash prevention, API gotchas)
 - `docs/knowledge/scripting/patterns.md` — curated FMOD scripting patterns (check SCRIPT-P15 intent map)
-- `docs/knowledge/xml-pipeline/rules.md` — XML editing pipeline rules
-- `docs/knowledge/xml-pipeline/property-mappings.md` — canonical effect property names
-- `docs/knowledge/verification/rules.md` — change verification rules
-- `docs/knowledge/profiler/rules.md` — profiler analysis rules
-- `docs/knowledge/pipeline/rules.md` — tool and dispatch pipeline rules
-- `docs/knowledge/_raw/` — unreviewed auto-captured patterns and mistakes
