@@ -6,7 +6,7 @@ Umbrella workspace for all FMOD development. Contains shared platform documentat
 
 - `docs/` — shared FMOD platform documentation (Studio scripting API, operational knowledge, profiler specs, references). All projects reference these.
 - `mcp/fmod-mcp/` — MCP server bridging AI assistants to FMOD Studio (TCP, XML, daemon, playtest, profiler)
-- `scripts/lf-fmodScripts/` — FMOD Studio scripts (audio reversal, export tools, tagging, presets)
+- `scripts/fmod-scripts/` — FMOD Studio scripts and doc fetcher (lf-fmodScripts, factory examples, utilities)
 - `tools/` — workspace-level utilities (update_docs.py)
 
 ## Conventions

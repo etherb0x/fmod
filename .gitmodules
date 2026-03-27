@@ -1,3 +1,6 @@
 [submodule "mcp/fmod-mcp"]
 	path = mcp/fmod-mcp
 	url = https://github.com/etherb0x/fmod-mcp.git
+[submodule "scripts/fmod-scripts"]
+	path = scripts/fmod-scripts
+	url = https://github.com/etherb0x/fmod-scripts.git
